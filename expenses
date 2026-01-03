@@ -1,0 +1,124 @@
+"""
+Simple Expense Calculator
+A beginner-friendly project to track and calculate expenses
+"""
+
+def display_menu():
+    """Display the main menu options"""
+    print("\n===== EXPENSE CALCULATOR =====")
+    print("1. Add an expense")
+    print("2. View all expenses")
+    print("3. View total expenses")
+    print("4. View expenses by category")
+    print("5. Clear all expenses")
+    print("6. Exit")
+    print("==============================")
+
+def add_expense(expenses):
+    """Add a new expense to the list"""
+    print("\n--- Add New Expense ---")
+    
+    # Get expense details from user
+    description = input("Enter expense description: ")
+    
+    while True:
+        try:
+            amount = float(input("Enter amount: $"))
+            if amount <= 0:
+                print("Amount must be positive. Try again.")
+                continue
+            break
+        except ValueError:
+            print("Invalid amount. Please enter a number.")
+    
+    category = input("Enter category (e.g., Food, Transport, Bills): ").capitalize()
+    
+    # Create expense dictionary
+    expense = {
+        'description': description,
+        'amount': amount,
+        'category': category
+    }
+    
+    expenses.append(expense)
+    print(f"\n✓ Expense added successfully!")
+
+def view_expenses(expenses):
+    """Display all expenses"""
+    if not expenses:
+        print("\nNo expenses recorded yet.")
+        return
+    
+    print("\n--- All Expenses ---")
+    for i, expense in enumerate(expenses, 1):
+        print(f"{i}. {expense['description']} - ${expense['amount']:.2f} ({expense['category']})")
+
+def calculate_total(expenses):
+    """Calculate and display total expenses"""
+    if not expenses:
+        print("\nNo expenses to calculate.")
+        return
+    
+    total = sum(expense['amount'] for expense in expenses)
+    print(f"\n--- Total Expenses ---")
+    print(f"Total: ${total:.2f}")
+
+def view_by_category(expenses):
+    """Display expenses grouped by category"""
+    if not expenses:
+        print("\nNo expenses recorded yet.")
+        return
+    
+    # Group expenses by category
+    categories = {}
+    for expense in expenses:
+        cat = expense['category']
+        if cat not in categories:
+            categories[cat] = []
+        categories[cat].append(expense)
+    
+    print("\n--- Expenses by Category ---")
+    for category, items in categories.items():
+        category_total = sum(item['amount'] for item in items)
+        print(f"\n{category}: ${category_total:.2f}")
+        for item in items:
+            print(f"  - {item['description']}: ${item['amount']:.2f}")
+
+def clear_expenses(expenses):
+    """Clear all expenses"""
+    confirm = input("\nAre you sure you want to clear all expenses? (yes/no): ").lower()
+    if confirm == 'yes':
+        expenses.clear()
+        print("✓ All expenses cleared!")
+    else:
+        print("Operation cancelled.")
+
+def main():
+    """Main function to run the expense calculator"""
+    expenses = []
+    
+    print("Welcome to Expense Calculator!")
+    
+    while True:
+        display_menu()
+        choice = input("\nEnter your choice (1-6): ")
+        
+        if choice == '1':
+            add_expense(expenses)
+        elif choice == '2':
+            view_expenses(expenses)
+        elif choice == '3':
+            calculate_total(expenses)
+        elif choice == '4':
+            view_by_category(expenses)
+        elif choice == '5':
+            clear_expenses(expenses)
+        elif choice == '6':
+            print("\nThank you for using Expense Calculator. Goodbye!")
+            break
+        else:
+            print("\nInvalid choice. Please enter a number between 1 and 6.")
+
+# Run the program
+if __name__ == "__main__":
+    main()

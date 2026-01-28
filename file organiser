@@ -1,0 +1,89 @@
+import os
+import shutil
+
+def organize_downloads():
+    
+    downloads_path = os.path.join(os.path.expanduser("~"), "Downloads")
+
+    if not os.path.exists(downloads_path):
+        print("Downloads folder not found.")
+        return
+
+    
+    default_extension_folders = {
+        '.txt': 'Text Files',
+        '.pdf': 'PDF Files',
+        '.docx': 'Word Documents',
+        '.xlsx': 'Excel Files',
+        '.pptx': 'PowerPoint Files',
+        '.jpg': 'Images',
+        '.jpeg': 'Images',
+        '.png': 'Images',
+        '.gif': 'Images',
+        '.mp4': 'Videos',
+        '.avi': 'Videos',
+        '.mp3': 'Music',
+        '.zip': 'Archives',
+        '.rar': 'Archives',
+        '.exe': 'Executables',
+        '.py': 'Python Files',
+        '.html': 'Web Files',
+        '.css': 'Web Files',
+        '.js': 'Web Files',
+    }
+
+    print("Available file types to organize:")
+    for ext, folder in default_extension_folders.items():
+        print(f"{ext}: {folder}")
+
+    
+    selected_extensions = input("\nEnter the extensions you want to organize (comma-separated, e.g., .txt,.pdf,.jpg): ").strip().lower().split(',')
+    selected_extensions = [ext.strip() for ext in selected_extensions if ext.strip()]
+
+    
+    extension_folders = {}
+    for ext in selected_extensions:
+        if ext in default_extension_folders:
+            custom_name = input(f"Enter custom folder name for {ext} (default: {default_extension_folders[ext]}): ").strip()
+            if not custom_name:
+                custom_name = default_extension_folders[ext]
+            extension_folders[ext] = custom_name
+        else:
+            print(f"Extension {ext} not recognized. Skipping.")
+
+    if not extension_folders:
+        print("No valid extensions selected.")
+        return
+
+    
+    for filename in os.listdir(downloads_path):
+        file_path = os.path.join(downloads_path, filename)
+
+        
+        if os.path.isdir(file_path):
+            continue
+
+        
+        _, ext = os.path.splitext(filename)
+        ext = ext.lower()
+
+        # Check if extension is selected
+        if ext in extension_folders:
+            folder_name = extension_folders[ext]
+
+            
+            folder_path = os.path.join(downloads_path, folder_name)
+            if not os.path.exists(folder_path):
+                os.makedirs(folder_path)
+
+          
+            dest_path = os.path.join(folder_path, filename)
+            shutil.move(file_path, dest_path)
+            print(f"Moved {filename} to {folder_name}")
+
+    print("File organization complete!")
+
+if __name__ == "__main__":
+    organize_downloads()
+
+
